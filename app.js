@@ -6,10 +6,10 @@ const app = express();
 const PORT = 8000;
 var url;
 var title, release, rating
-const details = {title:"",release_date:"",rating:""}
+const details = {title:"",release_date:"",rating:"",runtime:""}
 app.get('/scrap',(req,res)=>{
-    // url = "https://www.imdb.com/title/tt0107290/"
-    url = "https://www.imdb.com/title/tt0079221/?pf_rd_m=A2FGELUUNOQJNL&pf_rd_p=690bec67-3bd7-45a1-9ab4-4f274a72e602&pf_rd_r=PWHY2KD5PBR2X8TG336G&pf_rd_s=center-4&pf_rd_t=60601&pf_rd_i=india.top-rated-indian-movies&ref_=fea_india_ss_toprated_tt_2"
+    url = "https://www.imdb.com/title/tt0107290/"
+    // url = "https://www.imdb.com/title/tt0079221/?pf_rd_m=A2FGELUUNOQJNL&pf_rd_p=690bec67-3bd7-45a1-9ab4-4f274a72e602&pf_rd_r=PWHY2KD5PBR2X8TG336G&pf_rd_s=center-4&pf_rd_t=60601&pf_rd_i=india.top-rated-indian-movies&ref_=fea_india_ss_toprated_tt_2"
     request(url,function (error,response,html){
         const $ = cheerio.load(html)
         $(".title_wrapper").filter(function(){
@@ -30,9 +30,11 @@ app.get('/scrap',(req,res)=>{
             rating = data.children().first().text();
             details.rating = rating;
         })
-
-        console.log("Here are the details ! ",details)
-        res.send({Movie_details:details})
+        var runtime = $(".subtext time");
+        var runtimeText = runtime.text().trim();
+        details.runtime = runtimeText;
+        
+        res.send({Movie_details:details})   
     })
 })
 
